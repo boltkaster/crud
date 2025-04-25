@@ -1,10 +1,11 @@
 <?php
-session_start();
 require 'db.php';
 
-if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') exit("No access");
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $stmt = $pdo->prepare("DELETE FROM qna WHERE id = ?");
+    $stmt->execute([$_POST['id']]);
+}
 
-$id = $_GET['id'];
-$stmt = $pdo->prepare("DELETE FROM qna WHERE id = ?");
-$stmt->execute([$id]);
 header("Location: qna.php");
+exit();
+?>
