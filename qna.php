@@ -1,5 +1,43 @@
 <!DOCTYPE html>
 <html lang="sk">
+<?php
+session_start();
+require 'db.php';
+
+$user = $_SESSION['user'] ?? null;
+
+if ($_SERVER["REQUEST_METHOD"] === "POST" && $user) {
+  $stmt = $pdo->prepare("INSERT INTO qna (question, answer, user_id) VALUES (?, ?, ?)");
+  $stmt->execute([$_POST['question'], $_POST['answer'], $user['id']]);
+}
+
+$qna = $pdo->query("SELECT q.*, u.username FROM qna q LEFT JOIN users u ON q.user_id = u.id ORDER BY q.id DESC")->fetchAll();
+?>
+
+<h2>QnA List</h2>
+<?php foreach ($qna as $row): ?>
+  <div>
+    <strong><?= htmlspecialchars($row['question']) ?></strong><br>
+    <?= htmlspecialchars($row['answer']) ?><br>
+    <small>by <?= htmlspecialchars($row['username']) ?></small><br>
+    <?php if ($user && $user['role'] === 'admin'): ?>
+      <a href="edit_qna.php?id=<?= $row['id'] ?>">Edit</a> |
+      <a href="delete_qna.php?id=<?= $row['id'] ?>" onclick="return confirm('Delete?')">Delete</a>
+    <?php endif; ?>
+  </div><hr>
+<?php endforeach; ?>
+
+<?php if ($user): ?>
+  <h3>Add New</h3>
+  <form method="post">
+    Question: <br><textarea name="question"></textarea><br>
+    Answer: <br><textarea name="answer"></textarea><br>
+    <button type="submit">Add</button>
+  </form>
+<?php else: ?>
+  <p><a href="login.php">Log in</a> to add questions.</p>
+<?php endif; ?>
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,14 +51,14 @@
 <body>
   <header class="container main-header">
   <div class="logo-holder">
-    <a href="index.html"><img src="img/logo.png" height="40 "></a>
+    <a href="index.php"><img src="img/logo.png" height="40 "></a>
   </div>
   <nav class="main-nav">
     <ul class="main-menu" id="main-menu container">
-      <li><a href="index.html">Domov</a></li>
-      <li><a href="portfolio.html">Portfólio</a></li>
+      <li><a href="index.php">Domov</a></li>
+      <li><a href="portfolio.php">Portfólio</a></li>
       <li><a href="qna.html">Q&A</a></li>
-      <li><a href="kontakt.html">Kontakt</a></li>
+      <li><a href="kontakt.php">Kontakt</a></li>
     </ul>
     <a class="hamburger" id="hamburger">
       <i class="fa fa-bars"></i>
