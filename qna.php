@@ -44,8 +44,6 @@
     <?php
     session_start();
     require 'db.php';
-
-    // Handle form submission
     if ($_SERVER["REQUEST_METHOD"] === "POST" && !empty($_SESSION['user'])) {
       try {
         $stmt = $pdo->prepare("INSERT INTO qna (question, answer, user_id) VALUES (?, ?, ?)");
@@ -61,7 +59,6 @@
       }
     }
 
-    // Fetch Q&A
     $qna = $pdo->query("SELECT q.*, u.username FROM qna q LEFT JOIN users u ON q.user_id = u.id ORDER BY q.id DESC")->fetchAll();
     ?>
 
@@ -76,15 +73,13 @@
     <?php
     require 'db.php';
 
-    // Handle form submission (CREATE)
     if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['add_question'])) {
       $stmt = $pdo->prepare("INSERT INTO qna (question, answer) VALUES (?, ?)");
       $stmt->execute([$_POST['question'], $_POST['answer']]);
       header("Location: qna.php");
       exit();
     }
-
-    // Fetch all Q&A entries
+    
     $qna = $pdo->query("SELECT * FROM qna ORDER BY id DESC")->fetchAll();
     ?>
 

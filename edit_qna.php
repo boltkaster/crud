@@ -1,7 +1,6 @@
 <?php
 require 'db.php';
 
-// Handle form submission
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $stmt = $pdo->prepare("UPDATE qna SET question = ?, answer = ? WHERE id = ?");
     $stmt->execute([$_POST['question'], $_POST['answer'], $_POST['id']]);
@@ -9,7 +8,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     exit();
 }
 
-// Get current Q&A data
 $stmt = $pdo->prepare("SELECT * FROM qna WHERE id = ?");
 $stmt->execute([$_GET['id']]);
 $item = $stmt->fetch();
