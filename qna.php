@@ -79,22 +79,9 @@
       header("Location: qna.php");
       exit();
     }
-    
+
     $qna = $pdo->query("SELECT * FROM qna ORDER BY id DESC")->fetchAll();
     ?>
-
-    <!DOCTYPE html>
-    <html lang="sk">
-    <head>
-      <meta charset="UTF-8">
-      <title>Public Q&A System</title>
-      <style>
-        .qna-item { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
-        textarea { width: 100%; min-height: 80px; }
-        .actions { margin-top: 10px; }
-      </style>
-    </head>
-    <body>
 
     <h1>Public Q&A Board</h1>
 
